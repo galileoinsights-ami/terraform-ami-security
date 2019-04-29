@@ -21,6 +21,7 @@ locals {
 
   cloud_trail_bucket_name = "${lookup(var.cloud_trail, "s3_bucket")}"
   tfnetwork_iam_group = "${var.iam_groups["TFNetwork"]}"
+  tfrds_iam_group = "${var.iam_groups["TFRds"]}"
 }
 
 
@@ -114,6 +115,42 @@ module "tfnetwork_user" {
   version = "0.4.0"
 
   name = "TFNetwork"
+  create_user = true
+  create_iam_user_login_profile = false
+  create_iam_access_key = true
+  force_destroy = true
+  path = "/tf/"
+  pgp_key = "${var.pgp_key}"
+}
+
+
+
+## Setting the TFRds IAM Group
+module "tfrds_group" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "0.4.0"
+
+  name = "TFRds"
+  attach_iam_self_management_policy = false
+  create_group = true
+  custom_group_policy_arns = "${local.tfrds_iam_group["policies"]}"
+
+  group_users = [
+    "${module.tfrds_user.this_iam_user_name}"
+  ]
+}
+
+## Attach the custom policy to TFRds IAM Group
+resource "aws_iam_group_policy_attachment" "tfrds_group_attach" {
+  group      = "${module.tfrds_group.this_group_name}"
+  policy_arn = "${module.terraform_s3_backend_policy.arn}"
+}
+
+module "tfrds_user" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version = "0.4.0"
+
+  name = "TFRds"
   create_user = true
   create_iam_user_login_profile = false
   create_iam_access_key = true

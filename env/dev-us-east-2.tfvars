@@ -13,6 +13,9 @@ iam_groups = {
   TFNetwork={
     policies = ["arn:aws:iam::aws:policy/AmazonVPCFullAccess","arn:aws:iam::aws:policy/AmazonRDSFullAccess"]
   }
+  TFRds={
+    policies = ["arn:aws:iam::aws:policy/AmazonRDSFullAccess"]
+  }
 }
 
 pgp_key = "keybase:owaism"
