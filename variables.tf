@@ -1,3 +1,7 @@
+variable "default_aws_tags" {
+  description = "default aws tags"
+  default = {}
+}
 
 variable "cloud_trail" {
   type = "map"

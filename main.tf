@@ -59,6 +59,8 @@ resource "aws_s3_bucket" "cloud_trail_bucket" {
   force_destroy = true
 
   policy = "${data.template_file.cloudtrail_s3_policy.rendered}"
+
+  tags = "${var.default_aws_tags}"
 }
 
 ## Activate cloud trail
@@ -67,6 +69,7 @@ resource "aws_cloudtrail" "ami-cloud-trail" {
   s3_bucket_name                = "${aws_s3_bucket.cloud_trail_bucket.id}"
   s3_key_prefix                 = ""
   include_global_service_events = true
+  tags = "${var.default_aws_tags}"
 }
 
 /*******************************
@@ -102,6 +105,7 @@ module "tfnetwork_group" {
   group_users = [
     "${module.tfnetwork_user.this_iam_user_name}"
   ]
+
 }
 
 ## Attach the custome policy to TFNetwork IAM Group
@@ -121,6 +125,7 @@ module "tfnetwork_user" {
   force_destroy = true
   path = "/tf/"
   pgp_key = "${var.pgp_key}"
+
 }
 
 
@@ -138,6 +143,7 @@ module "tfrds_group" {
   group_users = [
     "${module.tfrds_user.this_iam_user_name}"
   ]
+
 }
 
 ## Attach the custom policy to TFRds IAM Group
@@ -157,4 +163,5 @@ module "tfrds_user" {
   force_destroy = true
   path = "/tf/"
   pgp_key = "${var.pgp_key}"
+
 }

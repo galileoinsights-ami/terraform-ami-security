@@ -1,3 +1,10 @@
+
+# default AWS Tags
+default_aws_tags = {
+  Terraform = "true"
+  Environment = "dev"
+}
+
 # Cloud Trail Properties
 
 cloud_trail = {
