@@ -30,3 +30,19 @@ output "TFRds_keybase_secret_key_decrypt_command" {
   description = "Command to decrypt TFRds Secret Key"
   value = "${module.tfrds_user.keybase_secret_key_decrypt_command}"
 }
+
+
+output "TFLoadBalancer_access_key" {
+  description = "TFLoadBalancer User Access Key"
+  value = "${module.tfloadbalancer_user.this_iam_access_key_id}"
+}
+
+output "TFLoadBalancer_encrypted_base64_secret" {
+  description = "TFLoadBalancer User encrypted secret, base64 encoded"
+  value = "${module.tfloadbalancer_user.this_iam_access_key_encrypted_secret}"
+}
+
+output "TFLoadBalancer_keybase_secret_key_decrypt_command" {
+  description = "Command to decrypt TFLoadBalancer Secret Key"
+  value = "${module.tfloadbalancer_user.keybase_secret_key_decrypt_command}"
+}

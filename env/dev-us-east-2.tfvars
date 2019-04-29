@@ -23,6 +23,9 @@ iam_groups = {
   TFRds={
     policies = ["arn:aws:iam::aws:policy/AmazonRDSFullAccess"]
   }
+  TFLoadBalancer={
+    policies = ["arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"]
+  }
 }
 
 pgp_key = "keybase:owaism"

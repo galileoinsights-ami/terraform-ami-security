@@ -18,6 +18,7 @@ This is used to setup:
 		* AWSCloudTrailFullAccess: arn:aws:iam::aws:policy/AWSCloudTrailFullAccess
 	* IAM User: TFSecurity with membership to the following IAM Group
 		* TFSecurity
+5. Have a `setup.sh` file which exports all the environment varibles mentioned below in the root directory of this workspace
 
 ## Setup Environment Variable
 
