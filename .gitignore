@@ -1,2 +1,3 @@
 .terraform
 setup.sh
+.DS_Store
