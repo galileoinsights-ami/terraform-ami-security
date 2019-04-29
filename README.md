@@ -29,8 +29,7 @@ ENV | The environment of this AWS Setup | Yes | dev, prod
 AWS_ACCESS_KEY_ID | AWS Access key of user `TFSecurity` | Yes |
 AWS_SECRET_ACCESS_KEY | AWS Access Secret Key of user `TFSecurity` | Yes |
 AWS_DEFAULT_REGION | The AWS Region to work with | Yes | us-east-2
-TF_VAR_backend_s3_bucket_name | The S3 Terraform Backend Bucket |
-Yes | ami-terraform-configs
+TF_VAR_backend_s3_bucket_name | The S3 Terraform Backend Bucket | Yes | ami-terraform-configs
 
 ## Before Committing
 
