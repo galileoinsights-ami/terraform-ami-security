@@ -20,7 +20,6 @@ provider "aws" {}
 locals {
 
   cloud_trail_bucket_name = "${lookup(var.cloud_trail, "s3_bucket")}"
-
   tfnetwork_iam_group = "${var.iam_groups["TFNetwork"]}"
 }
 
@@ -79,6 +78,7 @@ Setup up IAM Groups and Users
 ## remote state in S3
 module "terraform_s3_backend_policy" {
   source = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  version = "0.4.0"
 
   name        = "TerraformS3BackendManagement"
   path        = "/"
@@ -91,6 +91,7 @@ module "terraform_s3_backend_policy" {
 ## Setting the TFNetwork IAM Group
 module "tfnetwork_group" {
   source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "0.4.0"
 
   name = "TFNetwork"
   attach_iam_self_management_policy = false
