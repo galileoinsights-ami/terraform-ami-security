@@ -15,3 +15,7 @@ variable "backend_s3_bucket_name" {
   description = "Name of the backend S3 bucket"
   default = "backend_s3_bucket_name"
 }
+
+variable "pgp_key" {
+  description = "PGP key to be used to encrypt sesitive data. Can be a keybase username"
+}

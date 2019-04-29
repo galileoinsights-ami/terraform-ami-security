@@ -20,25 +20,25 @@ provider "aws" {}
 locals {
 
   cloud_trail_bucket_name = "${lookup(var.cloud_trail, "s3_bucket")}"
-  #developers_iam_group_policies = "${lookup(var.iam_groups, "developers_policies")}"
-  developers_iam_group = "${var.iam_groups["developers"]}"
-  dba_iam_group = "${var.iam_groups["dba"]}"
-  tf_network_iam_group = "${var.iam_groups["TFNetwork"]}"
 
-  tfnetwork_group_policies = ["${local.tf_network_iam_group["policies"]}","${module.terraform_s3_backend_policy.arn}"]
+  tfnetwork_iam_group = "${var.iam_groups["TFNetwork"]}"
 }
+
 
 data "aws_caller_identity" "current" {}
 
-
+## Template to create the S3 policy for cloud trail
 data "template_file" "cloudtrail_s3_policy" {
   template = "${file("templates/cloudtrail_s3_policy.tpl")}"
   vars {
-    s3_bucket = "dev-us-east-2-ami-cloud-trail-events"
+    s3_bucket = "${local.cloud_trail_bucket_name}"
     aws_account_id = "${data.aws_caller_identity.current.account_id}"
   }
 }
 
+
+
+## IAM Policy to be attached all terraform Users to manage remote\backend state
 data "template_file" "terraform_s3_backend_policy" {
   template = "${file("templates/terraform_s3_backend_policy.tpl")}"
   vars {
@@ -47,15 +47,13 @@ data "template_file" "terraform_s3_backend_policy" {
 }
 
 
-# Setting up cloud trail for this region
+/*******************************
 
-resource "aws_cloudtrail" "ami-cloud-trail" {
-  name                          = "${lookup(var.cloud_trail, "name")}"
-  s3_bucket_name                = "${aws_s3_bucket.cloud_trail_bucket.id}"
-  s3_key_prefix                 = ""
-  include_global_service_events = true
-}
+Cloud Trail Setup
 
+*******************************/
+
+## Setup bucket for Cloud Trail
 resource "aws_s3_bucket" "cloud_trail_bucket" {
   bucket        = "${local.cloud_trail_bucket_name}"
   force_destroy = true
@@ -63,7 +61,22 @@ resource "aws_s3_bucket" "cloud_trail_bucket" {
   policy = "${data.template_file.cloudtrail_s3_policy.rendered}"
 }
 
-## Adding Custom Policies
+## Activate cloud trail
+resource "aws_cloudtrail" "ami-cloud-trail" {
+  name                          = "${lookup(var.cloud_trail, "name")}"
+  s3_bucket_name                = "${aws_s3_bucket.cloud_trail_bucket.id}"
+  s3_key_prefix                 = ""
+  include_global_service_events = true
+}
+
+/*******************************
+
+Setup up IAM Groups and Users
+
+********************************/
+
+## Adding Custom Policy so that all Terraforom users can access and commit to
+## remote state in S3
 module "terraform_s3_backend_policy" {
   source = "terraform-aws-modules/iam/aws//modules/iam-policy"
 
@@ -74,31 +87,36 @@ module "terraform_s3_backend_policy" {
   policy = "${data.template_file.terraform_s3_backend_policy.rendered}"
 }
 
-# Setting up IAM Groups
 
-module "developers_group" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
-
-  name = "developers"
-  attach_iam_self_management_policy = true
-  create_group = true
-  custom_group_policy_arns = "${local.developers_iam_group["policies"]}"
-}
-
-module "dba_group" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
-
-  name = "dba"
-  attach_iam_self_management_policy = true
-  create_group = true
-  custom_group_policy_arns = "${local.dba_iam_group["policies"]}"
-}
-
+## Setting the TFNetwork IAM Group
 module "tfnetwork_group" {
   source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
 
   name = "TFNetwork"
-  attach_iam_self_management_policy = true
+  attach_iam_self_management_policy = false
   create_group = true
-  custom_group_policy_arns = "${flatten(local.tfnetwork_group_policies)}"
+  custom_group_policy_arns = "${local.tfnetwork_iam_group["policies"]}"
+
+  group_users = [
+    "${module.tfnetwork_user.this_iam_user_name}"
+  ]
+}
+
+## Attach the custome policy to TFNetwork IAM Group
+resource "aws_iam_group_policy_attachment" "tfnetwork_group_attach" {
+  group      = "${module.tfnetwork_group.this_group_name}"
+  policy_arn = "${module.terraform_s3_backend_policy.arn}"
+}
+
+module "tfnetwork_user" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version = "0.4.0"
+
+  name = "TFNetwork"
+  create_user = true
+  create_iam_user_login_profile = false
+  create_iam_access_key = true
+  force_destroy = true
+  path = "/tf/"
+  pgp_key = "${var.pgp_key}"
 }

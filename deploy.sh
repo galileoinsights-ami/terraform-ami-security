@@ -1,6 +1,6 @@
 #!/bin/sh
 
-## Starting with Terraform Infrastructure setup
+source setup.sh
 
 terraform init \
 	-backend=true \
@@ -10,4 +10,4 @@ terraform init \
 	-backend-config="secret_key="$AWS_SECRET_ACCESS_KEY
 
 
-terraform apply -auto-approve -var-file=env/$ENV-$AWS_DEFAULT_REGION.tfvars
+terraform apply -var-file=env/$ENV-$AWS_DEFAULT_REGION.tfvars
