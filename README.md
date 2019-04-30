@@ -5,20 +5,37 @@ This is used to setup:
 * Cloud Trail
 * IAM User Groups
 * IAM Policies
+* AWS Keypairs
 
 ## Pre Requisites
 
 1. **Pre-Commit Git Hook**: Install `pre-commit`. Visit https://pre-commit.com/. This is used to clean up the code before commiting to git.
 2. **AWS Secret Scanner**: Install git-secrets. Visit https://github.com/awslabs/git-secrets. This is used to scan for aws credentials before a commit occurs.
 3. **Terraform**: v0.11 Installed
-4. **AWS Setup**:
+4. Create IAM Custom Policy name `KeyImportPolicy` with the following content
+	```
+	{
+	    "Version": "2012-10-17",
+	    "Statement": [
+	        {
+	            "Sid": "SomeSid2934",
+	            "Effect": "Allow",
+	            "Action": "ec2:ImportKeyPair",
+	            "Resource": "*"
+	        }
+	    ]
+	}
+	```
+5. **AWS Setup**:
 	* IAM Group: TFSecurity with the following managed policies
 		* IAMFullAccess: arn:aws:iam::aws:policy/IAMFullAccess
 		* AmazonS3FullAccess: arn:aws:iam::aws:policy/AmazonS3FullAccess
 		* AWSCloudTrailFullAccess: arn:aws:iam::aws:policy/AWSCloudTrailFullAccess
+		* AWSKeyManagementServicePowerUser: arn:aws:iam::aws:policy/AWSKeyManagementServicePowerUser
+		* Custom `KeyImportPolicy` created above
 	* IAM User: TFSecurity with membership to the following IAM Group
 		* TFSecurity
-5. Have a `setup.sh` file which exports all the environment varibles mentioned below in the root directory of this workspace
+6. Have a `setup.sh` file which exports all the environment varibles mentioned below in the root directory of this workspace
 
 ## Setup Environment Variable
 

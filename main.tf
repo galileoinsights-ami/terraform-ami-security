@@ -92,6 +92,12 @@ module "terraform_s3_backend_policy" {
   policy = "${data.template_file.terraform_s3_backend_policy.rendered}"
 }
 
+## Creates a key pair to be used for spining up EC2 instances
+resource "aws_key_pair" "infrastructure_admin" {
+  key_name   = "infrastructure-admin"
+  public_key = "${base64decode(var.default_admin_ssh_public_key_base64)}"
+}
+
 
 ## Setting the TFNetwork IAM Group
 module "tfnetwork_group" {

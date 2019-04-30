@@ -23,3 +23,8 @@ variable "backend_s3_bucket_name" {
 variable "pgp_key" {
   description = "PGP key to be used to encrypt sesitive data. Can be a keybase username"
 }
+
+
+variable "default_admin_ssh_public_key_base64" {
+  description = "Public key of the admin ssh keypair base64 encoded"
+}

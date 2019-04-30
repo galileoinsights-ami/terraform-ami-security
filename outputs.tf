@@ -46,3 +46,13 @@ output "TFLoadBalancer_keybase_secret_key_decrypt_command" {
   description = "Command to decrypt TFLoadBalancer Secret Key"
   value = "${module.tfloadbalancer_user.keybase_secret_key_decrypt_command}"
 }
+
+output "infrastructure_admin_key_name" {
+  description = "Key name of the Infrastructure Admin Keypair"
+  value = "${aws_key_pair.infrastructure_admin.key_name}"
+}
+
+output "infrastructure_admin_key_fingerprint" {
+  description = "Fingerprint of the Infrastructure Admin Keypair"
+  value = "${aws_key_pair.infrastructure_admin.fingerprint}"
+}
