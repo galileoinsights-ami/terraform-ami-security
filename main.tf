@@ -2,7 +2,7 @@
 
 terraform {
   backend "s3" {
-    key = "security.tstate"
+    key = "security.tfstate"
   }
 }
 
@@ -23,6 +23,8 @@ locals {
   tfnetwork_iam_group = "${var.iam_groups["TFNetwork"]}"
   tfrds_iam_group = "${var.iam_groups["TFRds"]}"
   tfloadbalancer_iam_group = "${var.iam_groups["TFLoadBalancer"]}"
+  tfbastion_iam_group = "${var.iam_groups["TFBastion"]}"
+  tfroute53_iam_group = "${var.iam_groups["TFRoute53"]}"
 }
 
 
@@ -174,7 +176,7 @@ module "tfrds_user" {
 }
 
 
-## Setting the TFRds IAM Group
+## Setting the TFLoadlancer IAM Group
 module "tfloadbalancer_group" {
   source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
   version = "0.4.0"
@@ -190,7 +192,7 @@ module "tfloadbalancer_group" {
 
 }
 
-## Attach the custom policy to TFRds IAM Group
+## Attach the custom policy to TFLoadbalancer IAM Group
 resource "aws_iam_group_policy_attachment" "tfloadbalancer_group_attach" {
   group      = "${module.tfloadbalancer_group.this_group_name}"
   policy_arn = "${module.terraform_s3_backend_policy.arn}"
@@ -201,6 +203,80 @@ module "tfloadbalancer_user" {
   version = "0.4.0"
 
   name = "TFLoadBalancer"
+  create_user = true
+  create_iam_user_login_profile = false
+  create_iam_access_key = true
+  force_destroy = true
+  path = "/tf/"
+  pgp_key = "${var.pgp_key}"
+
+}
+
+
+## Setting the TFBastion IAM Group
+module "tfbastion_group" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "0.4.0"
+
+  name = "TFBastion"
+  attach_iam_self_management_policy = false
+  create_group = true
+  custom_group_policy_arns = "${local.tfbastion_iam_group["policies"]}"
+
+  group_users = [
+    "${module.tfbastion_user.this_iam_user_name}"
+  ]
+
+}
+
+## Attach the custom policy to TFBastion IAM Group
+resource "aws_iam_group_policy_attachment" "tfbastion_group_attach" {
+  group      = "${module.tfbastion_group.this_group_name}"
+  policy_arn = "${module.terraform_s3_backend_policy.arn}"
+}
+
+module "tfbastion_user" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version = "0.4.0"
+
+  name = "TFBastion"
+  create_user = true
+  create_iam_user_login_profile = false
+  create_iam_access_key = true
+  force_destroy = true
+  path = "/tf/"
+  pgp_key = "${var.pgp_key}"
+
+}
+
+
+## Setting the TFRoute53 IAM Group
+module "tfroute53_group" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "0.4.0"
+
+  name = "TFRoute53"
+  attach_iam_self_management_policy = false
+  create_group = true
+  custom_group_policy_arns = "${local.tfroute53_iam_group["policies"]}"
+
+  group_users = [
+    "${module.tfroute53_user.this_iam_user_name}"
+  ]
+
+}
+
+## Attach the custom policy to TFRoute53 IAM Group
+resource "aws_iam_group_policy_attachment" "tfroute53_group_attach" {
+  group      = "${module.tfroute53_group.this_group_name}"
+  policy_arn = "${module.terraform_s3_backend_policy.arn}"
+}
+
+module "tfroute53_user" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version = "0.4.0"
+
+  name = "TFRoute53"
   create_user = true
   create_iam_user_login_profile = false
   create_iam_access_key = true

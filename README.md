@@ -32,6 +32,7 @@ This is used to setup:
 		* AmazonS3FullAccess: arn:aws:iam::aws:policy/AmazonS3FullAccess
 		* AWSCloudTrailFullAccess: arn:aws:iam::aws:policy/AWSCloudTrailFullAccess
 		* AWSKeyManagementServicePowerUser: arn:aws:iam::aws:policy/AWSKeyManagementServicePowerUser
+		* AmazonEC2FullAccess: arn:aws:iam::aws:policy/AmazonEC2FullAccess
 		* Custom `KeyImportPolicy` created above
 	* IAM User: TFSecurity with membership to the following IAM Group
 		* TFSecurity

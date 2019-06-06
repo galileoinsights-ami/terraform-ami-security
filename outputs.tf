@@ -1,3 +1,12 @@
+output "infrastructure_admin_key_name" {
+  description = "Key name of the Infrastructure Admin Keypair"
+  value = "${aws_key_pair.infrastructure_admin.key_name}"
+}
+
+output "infrastructure_admin_key_fingerprint" {
+  description = "Fingerprint of the Infrastructure Admin Keypair"
+  value = "${aws_key_pair.infrastructure_admin.fingerprint}"
+}
 
 
 output "TFNetwork_access_key" {
@@ -47,12 +56,33 @@ output "TFLoadBalancer_keybase_secret_key_decrypt_command" {
   value = "${module.tfloadbalancer_user.keybase_secret_key_decrypt_command}"
 }
 
-output "infrastructure_admin_key_name" {
-  description = "Key name of the Infrastructure Admin Keypair"
-  value = "${aws_key_pair.infrastructure_admin.key_name}"
+output "TFBastion_access_key" {
+  description = "TFBastion User Access Key"
+  value = "${module.tfbastion_user.this_iam_access_key_id}"
 }
 
-output "infrastructure_admin_key_fingerprint" {
-  description = "Fingerprint of the Infrastructure Admin Keypair"
-  value = "${aws_key_pair.infrastructure_admin.fingerprint}"
+output "TFBastion_encrypted_base64_secret" {
+  description = "TFBastion User encrypted secret, base64 encoded"
+  value = "${module.tfbastion_user.this_iam_access_key_encrypted_secret}"
+}
+
+output "TFBastion_keybase_secret_key_decrypt_command" {
+  description = "Command to decrypt TFBastion Secret Key"
+  value = "${module.tfbastion_user.keybase_secret_key_decrypt_command}"
+}
+
+
+output "TFRoute53_access_key" {
+  description = "TFRoute53 User Access Key"
+  value = "${module.tfroute53_user.this_iam_access_key_id}"
+}
+
+output "TFRoute53_encrypted_base64_secret" {
+  description = "TFRoute53 User encrypted secret, base64 encoded"
+  value = "${module.tfroute53_user.this_iam_access_key_encrypted_secret}"
+}
+
+output "TFRoute53_keybase_secret_key_decrypt_command" {
+  description = "Command to decrypt TFRoute53 Secret Key"
+  value = "${module.tfroute53_user.keybase_secret_key_decrypt_command}"
 }
