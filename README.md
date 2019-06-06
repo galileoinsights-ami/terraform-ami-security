@@ -62,8 +62,8 @@ git secrets --scan --cached --no-index --untracked
 
 ## Executing Terraform
 
-Execute `deploy.sh` file
+Execute appropriate environment related deploy file
 
 ```
-./deploy.sh
+env="dev";./deploy-${env}.sh
 ```
