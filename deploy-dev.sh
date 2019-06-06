@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source setup.sh
+source setup-dev.sh
 
 terraform init \
 	-backend=true \

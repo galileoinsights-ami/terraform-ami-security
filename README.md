@@ -36,7 +36,8 @@ This is used to setup:
 		* Custom `KeyImportPolicy` created above
 	* IAM User: TFSecurity with membership to the following IAM Group
 		* TFSecurity
-6. Have a `setup.sh` file which exports all the environment varibles mentioned below in the root directory of this workspace
+6. Create S3 bucket for storing Terraform Backend
+7. Have a `setup.sh` file which exports all the environment varibles mentioned below in the root directory of this workspace
 
 ## Setup Environment Variable
 

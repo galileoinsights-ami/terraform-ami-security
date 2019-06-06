@@ -16,6 +16,9 @@ terraform {
 # terraform plan
 provider "aws" {}
 
+output "sample" {
+  value = "${lookup(var.cloud_trail, "s3_bucket")}"
+}
 
 locals {
 
