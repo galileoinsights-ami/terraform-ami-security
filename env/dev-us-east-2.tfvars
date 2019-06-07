@@ -32,6 +32,9 @@ iam_groups = {
   TFRoute53={
     policies = ["arn:aws:iam::aws:policy/AmazonRoute53FullAccess"]
   }
+  TFCertificateManager={
+    policies = ["arn:aws:iam::aws:policy/AmazonRoute53FullAccess","arn:aws:iam::aws:policy/AWSCertificateManagerFullAccess"]
+  }
 }
 
 pgp_key = "keybase:owaism"

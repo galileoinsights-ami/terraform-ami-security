@@ -65,5 +65,5 @@ git secrets --scan --cached --no-index --untracked
 Execute appropriate environment related deploy file
 
 ```
-env="dev";./deploy-${env}.sh
+ENV="dev";./deploy.sh
 ```

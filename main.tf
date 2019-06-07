@@ -28,6 +28,7 @@ locals {
   tfloadbalancer_iam_group = "${var.iam_groups["TFLoadBalancer"]}"
   tfbastion_iam_group = "${var.iam_groups["TFBastion"]}"
   tfroute53_iam_group = "${var.iam_groups["TFRoute53"]}"
+  tfcertificatemanager_iam_group = "${var.iam_groups["TFCertificateManager"]}"
 }
 
 
@@ -280,6 +281,42 @@ module "tfroute53_user" {
   version = "0.4.0"
 
   name = "TFRoute53"
+  create_user = true
+  create_iam_user_login_profile = false
+  create_iam_access_key = true
+  force_destroy = true
+  path = "/tf/"
+  pgp_key = "${var.pgp_key}"
+
+}
+
+## Setting the TFCertificateManager IAM Group
+module "tfcertificatemanager_group" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "0.4.0"
+
+  name = "TFCertificateManager"
+  attach_iam_self_management_policy = false
+  create_group = true
+  custom_group_policy_arns = "${local.tfcertificatemanager_iam_group["policies"]}"
+
+  group_users = [
+    "${module.tfcertificatemanager_user.this_iam_user_name}"
+  ]
+
+}
+
+## Attach the custom policy to TFCertificateManager IAM Group
+resource "aws_iam_group_policy_attachment" "tfcertificatemanager_group_attach" {
+  group      = "${module.tfcertificatemanager_group.this_group_name}"
+  policy_arn = "${module.terraform_s3_backend_policy.arn}"
+}
+
+module "tfcertificatemanager_user" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version = "0.4.0"
+
+  name = "TFCertificateManager"
   create_user = true
   create_iam_user_login_profile = false
   create_iam_access_key = true

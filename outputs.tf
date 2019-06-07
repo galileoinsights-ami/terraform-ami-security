@@ -86,3 +86,19 @@ output "TFRoute53_keybase_secret_key_decrypt_command" {
   description = "Command to decrypt TFRoute53 Secret Key"
   value = "${module.tfroute53_user.keybase_secret_key_decrypt_command}"
 }
+
+
+output "TFCertificateManager_access_key" {
+  description = "TFCertificateManager User Access Key"
+  value = "${module.tfcertificatemanager_user.this_iam_access_key_id}"
+}
+
+output "TFCertificateManager_encrypted_base64_secret" {
+  description = "TFCertificateManager User encrypted secret, base64 encoded"
+  value = "${module.tfcertificatemanager_user.this_iam_access_key_encrypted_secret}"
+}
+
+output "TFCertificateManager_keybase_secret_key_decrypt_command" {
+  description = "Command to decrypt TFCertificateManager Secret Key"
+  value = "${module.tfcertificatemanager_user.keybase_secret_key_decrypt_command}"
+}
