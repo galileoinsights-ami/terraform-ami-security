@@ -27,7 +27,7 @@ iam_groups = {
     policies = ["arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"]
   }
   TFBastion={
-    policies = ["arn:aws:iam::aws:policy/AmazonEC2FullAccess"]
+    policies = ["arn:aws:iam::aws:policy/AmazonEC2FullAccess","arn:aws:iam::aws:policy/AmazonRoute53FullAccess"]
   }
   TFRoute53={
     policies = ["arn:aws:iam::aws:policy/AmazonRoute53FullAccess"]

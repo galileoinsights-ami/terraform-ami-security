@@ -53,6 +53,11 @@ data "template_file" "terraform_s3_backend_policy" {
   }
 }
 
+## IAM Policy to allow administration of Security Groups
+data "template_file" "security_group_administrator_policy" {
+  template = "${file("templates/security_group_administrator_policy.tpl")}"
+}
+
 
 /*******************************
 
@@ -97,6 +102,20 @@ module "terraform_s3_backend_policy" {
 
   policy = "${data.template_file.terraform_s3_backend_policy.rendered}"
 }
+
+## Adding Custom Policy To allow managment of Security Groups
+module "security_group_administrator_policy" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  version = "0.4.0"
+
+  name        = "SecurityGroupAdministratorPolicy"
+  path        = "/"
+  description = "Policy to allow managment of Security Groups for Terraform"
+
+  policy = "${data.template_file.security_group_administrator_policy.rendered}"
+}
+
+
 
 ## Creates a key pair to be used for spining up EC2 instances
 resource "aws_key_pair" "infrastructure_admin" {
@@ -160,9 +179,14 @@ module "tfrds_group" {
 }
 
 ## Attach the custom policy to TFRds IAM Group
-resource "aws_iam_group_policy_attachment" "tfrds_group_attach" {
+resource "aws_iam_group_policy_attachment" "tfrds_group_attach_s3_backend" {
   group      = "${module.tfrds_group.this_group_name}"
   policy_arn = "${module.terraform_s3_backend_policy.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "tfrds_group_attach_security_group_policy" {
+  group      = "${module.tfrds_group.this_group_name}"
+  policy_arn = "${module.security_group_administrator_policy.arn}"
 }
 
 module "tfrds_user" {
