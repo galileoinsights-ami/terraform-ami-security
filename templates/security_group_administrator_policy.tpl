@@ -4,6 +4,7 @@
     {
       "Sid": "Stmt1560885885988",
       "Action": [
+        "ec2:DescribeVpcs",
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:AuthorizeSecurityGroupIngress",
         "ec2:CreateSecurityGroup",
@@ -14,10 +15,13 @@
         "ec2:RevokeSecurityGroupEgress",
         "ec2:RevokeSecurityGroupIngress",
         "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
-        "ec2:UpdateSecurityGroupRuleDescriptionsIngress"
+        "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
+        "ec2:CreateTags",
+        "ec2:DeleteTags"
       ],
       "Effect": "Allow",
       "Resource": "*"
     }
   ]
 }
+
